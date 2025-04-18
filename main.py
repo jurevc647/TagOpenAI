@@ -56,5 +56,12 @@ Opis raziskave: "{raziskava}"
     except Exception as e:
         selected_tags = [f"Napaka: {str(e)}"]
 
-    prikaz = [(tag, TAGI_OPISI.get(tag, "")) for tag in selected_tags]
-    return templates.TemplateResponse("index.html", {"request": request, "tags": prikaz, "vnos": raziskava})
+    prikaz = [(tag, TAGI_OPISI[tag]) for tag in TAGI_OPISI]
+    izbrani = [tag for tag in selected_tags if tag in TAGI_OPISI]
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "tags": prikaz,
+        "vnos": raziskava,
+        "vsi_tagi": prikaz,
+        "izbrani": izbrani
+    })
