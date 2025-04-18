@@ -5,11 +5,13 @@ from openai import OpenAI
 import ast
 import os
 
+# ✅ Inicializacija OpenAI klienta z API ključem iz okolja
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+# 📚 Vnaprej definirani tagi z opisi
 TAGI_OPISI = {
     "srčno-žilni sistem": "Raziskave povezane s srcem, žilami in krvnim obtokom.",
     "matematični model": "Uporaba enačb in simulacij za opis bioloških sistemov.",
@@ -21,13 +23,21 @@ TAGI_OPISI = {
 }
 TAGI = list(TAGI_OPISI.keys())
 
+
 @app.get("/", response_class=HTMLResponse)
 async def form_get(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "tags": None})
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "tags": [(tag, TAGI_OPISI[tag]) for tag in TAGI],
+        "vnos": "",
+        "izbrani": []
+    })
+
 
 @app.post("/", response_class=HTMLResponse)
 async def form_post(request: Request, raziskava: str = Form(...)):
     tagi_z_opisi = "\n".join([f"- {tag}: {opis}" for tag, opis in TAGI_OPISI.items()])
+
     prompt = f"""
 Na podlagi spodnjega opisa izberi največ 3 najprimernejše tage izmed naslednjih.
 Vsak tag ima priložen opis, ki ti pomaga razumeti, kaj pomeni.
@@ -43,7 +53,7 @@ Opis raziskave: "{raziskava}"
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo",  # ali gpt-4 / gpt-4o, če imaš dostop
             messages=[
                 {"role": "system", "content": "Ti si pomočnik za klasifikacijo znanstvenih raziskav."},
                 {"role": "user", "content": prompt}
@@ -56,12 +66,12 @@ Opis raziskave: "{raziskava}"
     except Exception as e:
         selected_tags = [f"Napaka: {str(e)}"]
 
-    prikaz = [(tag, TAGI_OPISI[tag]) for tag in TAGI_OPISI]
-    izbrani = [tag for tag in selected_tags if tag in TAGI_OPISI]
+    prikaz = [(tag, TAGI_OPISI[tag]) for tag in TAGI]
+    izbrani = [tag for tag in selected_tags if tag in TAGI]
+
     return templates.TemplateResponse("index.html", {
         "request": request,
         "tags": prikaz,
         "vnos": raziskava,
-        "vsi_tagi": prikaz,
         "izbrani": izbrani
     })
