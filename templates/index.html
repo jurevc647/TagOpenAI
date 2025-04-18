@@ -5,24 +5,23 @@
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
         textarea { width: 100%; height: 120px; }
-        ul { list-style: none; padding: 0; }
-        li { margin-bottom: 10px; }
+        .tagbox { margin-bottom: 8px; }
     </style>
 </head>
 <body>
     <h2>Opis raziskave</h2>
     <form method="post">
         <textarea name="raziskava" required>{{ vnos or "" }}</textarea><br><br>
-        <input type="submit" value="Predlagaj tage">
-    </form>
+        <input type="submit" value="Predlagaj tage"><br><br>
 
-    {% if tags %}
-        <h3>Predlagani tagi:</h3>
-        <ul>
-            {% for tag, opis in tags %}
-                <li><strong>{{ tag }}</strong>: {{ opis }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <h3>Vsi tagi:</h3>
+        {% for tag, opis in vsi_tagi %}
+            <div class="tagbox">
+                <input type="checkbox" disabled
+                       {% if izbrani and tag in izbrani %}checked{% endif %}>
+                <strong>{{ tag }}</strong>: {{ opis }}
+            </div>
+        {% endfor %}
+    </form>
 </body>
 </html>
