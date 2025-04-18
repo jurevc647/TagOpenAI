@@ -59,7 +59,7 @@ Opis raziskave: "{raziskava}"
 
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "Ti si pomočnik za klasifikacijo znanstvenih raziskav."},
                 {"role": "user", "content": prompt}
