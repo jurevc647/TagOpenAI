@@ -1,0 +1,22 @@
+# Do not upload secrets
+.env
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE/editor configs (optional but useful)
+.vscode/
+.idea/
+*.swp
+
+# Mac or Windows system files (optional)
+.DS_Store
+Thumbs.db
