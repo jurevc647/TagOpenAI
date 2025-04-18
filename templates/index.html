@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Klasifikacija raziskav</title>
+    <title>Klasifikacija raziskave</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
         textarea { width: 100%; height: 120px; }
         .tagbox { margin-bottom: 8px; }
+        .tagbox input[type="checkbox"] { margin-right: 8px; }
     </style>
 </head>
 <body>
     <h2>Opis raziskave</h2>
+
     <form method="post">
         <textarea name="raziskava" required>{{ vnos or "" }}</textarea><br><br>
         <input type="submit" value="Predlagaj tage"><br><br>
 
-        <h3>Vsi tagi:</h3>
-        {% for tag, opis in vsi_tagi %}
+        <h3>Razpoložljivi tagi:</h3>
+        {% for tag, opis in tags %}
             <div class="tagbox">
                 <input type="checkbox" disabled
-                       {% if izbrani and tag in izbrani %}checked{% endif %}>
+                    {% if tag in izbrani %}checked{% endif %}>
                 <strong>{{ tag }}</strong>: {{ opis }}
             </div>
         {% endfor %}
